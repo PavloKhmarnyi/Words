@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
+
+    <RelativeLayout
+        android:id="@+id/titleRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_layout_height">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_layout_height"
+            android:text="Dictionary"
+            android:textSize="@dimen/title_text_view_text_size"
+            android:gravity="center"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="@color/colorWhite">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/toMainActivityButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/button_margin"
+            android:text="Back"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:layout_alignParentRight="true">
+        </Button>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/wordsLinearLayout"
+        android:layout_below="@+id/titleRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/words_layout_heigh"
+        android:orientation="vertical"
+        android:padding="@dimen/linear_layout_padding"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="English: "
+                android:textSize="@dimen/dictionary_text_view_size"
+                android:textColor="@color/black"
+                android:gravity="center">
+            </TextView>
+
+            <EditText
+                android:id="@+id/englishEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </EditText>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Ukrainian:"
+                android:textSize="@dimen/dictionary_text_view_size"
+                android:textColor="@color/black"
+                android:gravity="center">
+            </TextView>
+
+            <EditText
+                android:id="@+id/ukrainianEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </EditText>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dictionaryRecyclerView"
+        android:layout_below="@+id/wordsLinearLayout"
+        android:layout_above="@+id/addToDictionaryButton"
+        android:padding="@dimen/linear_layout_padding"
+        android:layout_margin="@dimen/linear_layout_margin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLightBlue">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/addToDictionaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add to dictionary"
+        android:textSize="@dimen/button_text_size"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorDarkGreen">
+    </Button>
+
+</RelativeLayout>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/titleRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_layout_height"
+        android:background="@color/colorPrimaryDark">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_layout_height"
+            android:text="Translator"
+            android:textSize="@dimen/title_text_view_text_size"
+            android:gravity="center"
+            android:textColor="@color/colorWhite">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/openDictionaryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/button_margin"
+            android:text="Dict"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:layout_alignParentRight="true">
+        </Button>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/titleRelativeLayout"
+        android:layout_above="@+id/wordsActionButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/linear_layout_padding"
+        android:paddingRight="@dimen/linear_layout_padding"
+        android:background="@color/colorPrimaryDark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/external_layout_height"
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:padding="@dimen/linear_layout_padding"
+            android:background="@color/colorLightBlue">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/inner_layout_height"
+                android:orientation="horizontal"
+                android:background="@color/colorLightBlue">
+
+                <Spinner
+                    android:id="@+id/fromLanguageSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5">
+                </Spinner>
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/fromLanguageEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/in_out_translate_text_size"
+                android:textColor="@color/black"
+                android:hint="Enter text"
+                android:gravity="top"
+                android:background="@color/white">
+            </EditText>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/external_layout_height"
+            android:orientation="vertical"
+            android:layout_weight="0.5"
+            android:padding="@dimen/linear_layout_padding"
+            android:layout_marginTop="@dimen/linear_layout_margin"
+            android:layout_marginBottom="@dimen/linear_layout_margin"
+            android:background="@color/colorLightBlue">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/inner_layout_height"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/toLanguageSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5">
+                </Spinner>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/toLanguageTextView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textMultiLine"
+                android:textSize="@dimen/in_out_translate_text_size"
+                android:textColor="@color/black"
+                android:background="@color/white">
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wordsActionButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/translateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:text="Translate"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/white"
+            android:background="@color/colorDarkGreen">
+
+        </Button>
+
+        <Button
+            android:id="@+id/addToDictionaryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/linear_layout_margin"
+            android:text="Add"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/black"
+            android:background="@color/white"
+            android:layout_alignParentRight="true">
+        </Button>
+
+    </LinearLayout>
+
+</RelativeLayout>

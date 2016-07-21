@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dictionary_item_layout_height"
+    android:layout_margin="@dimen/linear_layout_margin"
+    android:padding="@dimen/linear_layout_padding">
+
+    <LinearLayout
+        android:layout_width="@dimen/dictionary_item_layout_height"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/idTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:textSize="@dimen/dictionary_text_size"
+            android:textColor="@color/black"
+            android:gravity="center_vertical">
+        </TextView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/englishWordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="english"
+            android:textSize="@dimen/dictionary_text_size"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true">
+        </TextView>
+
+        <TextView
+            android:id="@+id/ukrainianWordTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/text_view_padding_left"
+            android:text="ukrainian"
+            android:textSize="@dimen/dictionary_text_size"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true">
+        </TextView>
+
+    </RelativeLayout>
+
+</LinearLayout>
