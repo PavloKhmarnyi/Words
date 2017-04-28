@@ -4,23 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pavlo.wwords.R;
+import com.example.pavlo.wwords.local_db_manager.DatabaseConfig;
 import com.example.pavlo.wwords.local_db_manager.LocalDatabaseManager;
 import com.example.pavlo.wwords.online_translator.api.ApiFactory;
 import com.example.pavlo.wwords.online_translator.models.AvailableLanguages;
@@ -29,6 +27,7 @@ import com.example.pavlo.wwords.online_translator.utilities.Config;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         apiFactory = new ApiFactory();
-
         databaseManager = new LocalDatabaseManager(this);
 
         initComponents();
@@ -77,6 +75,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         getAvailableLanguages();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (isLanguagesChoosen()) {
+            outState.putString("fromLanguage", fromLanguage);
+            outState.putString("toLanguage", toLanguage);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        fromLanguage = savedInstanceState.getString("fromLanguage");
+        toLanguage = savedInstanceState.getString("toLanguage");
     }
 
     private void initComponents() {
@@ -120,10 +136,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!toLanguageTextView.getText().equals("")) {
+                if (fromLanguageEditText.getText().toString().equals(""))
                     toLanguageTextView.setText("");
-                }
-                translate();
+                else if(isLanguagesChoosen())
+                    translate();
             }
 
             @Override
@@ -149,27 +165,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager)MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
+
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
+
         wifiInfo = cm.getActiveNetworkInfo();
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
+
         return false;
     }
 
     private void getAvailableLanguages() {
-        boolean internetAccess = isNetworkConnected();
-
-        if (internetAccess) {
+        if (isNetworkConnected()) {
             Observable<AvailableLanguages> getLanguagesList = apiFactory.getAvailableLanguages("en");
             getLanguagesList.subscribe(new Action1<AvailableLanguages>() {
                 @Override
@@ -180,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toLanguageSpinner.setAdapter(adapter);
 
                     setShortNamesLanguages(availableLanguages.getLangs(), languages);
+                    setStoredLanguages();
+
+                    if (!fromLanguageEditText.getText().toString().equals("") && isLanguagesChoosen())
+                        translate();
                 }
             });
             subscription = getLanguagesList.subscribe();
@@ -190,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             toLanguageSpinner.setAdapter(adapter);
 
             setShortNamesLanguages(storedLanguages, languages);
+            setStoredLanguages();
         }
     }
 
@@ -203,16 +222,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private String getLanguageFullName(String languageShortName) {
+        String languageFullName = null;
+
+        for (Map.Entry entry: languagesMap.entrySet()) {
+            if (languageShortName.equals(entry.getValue())) {
+                languageFullName = entry.getKey().toString();
+                break;
+            }
+        }
+
+        return languageFullName;
+    }
+
+    private void setStoredLanguages() {
+        if (fromLanguage != null && toLanguage != null) {
+            String fromLang = getLanguageFullName(fromLanguage);
+            String toLang = getLanguageFullName(toLanguage);
+
+            int fromLanguageId = adapter.getPosition(fromLang);
+            int toLanguageId = adapter.getPosition(toLang);
+
+            fromLanguageSpinner.setSelection(fromLanguageId);
+            toLanguageSpinner.setSelection(toLanguageId);
+        }
+    }
+
     private void translate() {
         StringBuilder lang = new StringBuilder();
         lang.append(fromLanguage);
         lang.append("-");
         lang.append(toLanguage);
 
-        String text = fromLanguageEditText.getText().toString();
-
+        String textForTranslating = fromLanguageEditText.getText().toString();
         if (isNetworkConnected()) {
-            Observable<TranslateResult> translateText = apiFactory.translateText(text, lang.toString());
+            Observable<TranslateResult> translateText = apiFactory.translateText(textForTranslating, lang.toString());
             translateText.subscribe(new Action1<TranslateResult>() {
                 @Override
                 public void call(TranslateResult translateResult) {
@@ -229,9 +273,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
             subscription = translateText.subscribe();
         } else {
-            String translatedText = databaseManager.searchWord(text, toLanguage);
-            toLanguageTextView.setText(translatedText);
+            String translatedText = toLanguage.equals("uk") ?
+                    databaseManager.searchWord(DatabaseConfig.ENGLISH, DatabaseConfig.UKRAINIAN, textForTranslating):
+                    databaseManager.searchWord(DatabaseConfig.UKRAINIAN, DatabaseConfig.ENGLISH, textForTranslating);
+            String text = translatedText.equals("") || translatedText == null ?
+                    "No match word " + textForTranslating + " at local dictionary!" :
+                    translatedText;
+            toLanguageTextView.setText(text);
         }
+    }
+
+    private boolean isLanguagesChoosen() {
+        return fromLanguage != null &&
+                toLanguage != null &&
+                !fromLanguage.equals("") &&
+                !toLanguage.equals("") &&
+                !fromLanguage.equals(" ") &&
+                !toLanguage.equals(" ");
     }
 
     private void addToDictionary() {
@@ -277,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.translateButton:
-                if (!fromLanguageEditText.getText().equals("")) {
+                if (!fromLanguageEditText.getText().toString().equals("") && isLanguagesChoosen()) {
                     translate();
                 } else {
                     Toast.makeText(MainActivity.this, "You must enter word to translate.", Toast.LENGTH_LONG).show();

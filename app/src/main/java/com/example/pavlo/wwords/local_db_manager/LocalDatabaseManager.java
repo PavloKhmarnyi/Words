@@ -34,35 +34,21 @@ public class LocalDatabaseManager {
         return id;
     }
 
-    public String searchWord(String word, String toLanguage) {
+    public String searchWord(String fromLanguage, String toLanguage, String word) {
         String translatedWord = "";
         Cursor cursor = null;
         int rowId = -1;
 
-        if (toLanguage.equals("uk")) {
-            cursor = database.rawQuery("SELECT " + DatabaseConfig.UKRAINIAN + " FROM "
-                    + DatabaseConfig.DICTIONARY_TABLE
-                    + " WHERE " + DatabaseConfig.ENGLISH + " = '" + word + "'",
-                    null);
+        cursor = database.rawQuery("SELECT " + toLanguage + " FROM "
+                        + DatabaseConfig.DICTIONARY_TABLE
+                        + " WHERE " + fromLanguage + " = '" + word + "'",
+                null);
 
-            if (cursor.moveToFirst() && cursor!= null) {
-                rowId = cursor.getColumnIndex(DatabaseConfig.UKRAINIAN);
-                do {
-                    translatedWord = cursor.getString(rowId);
-                } while (cursor.moveToNext());
-            }
-        } else if (toLanguage.equals("en")) {
-            cursor = database.rawQuery("SELECT " + DatabaseConfig.ENGLISH + " FROM "
-                            + DatabaseConfig.DICTIONARY_TABLE
-                            + " WHERE " + DatabaseConfig.UKRAINIAN + " = '" + word + "'",
-                    null);
-
-            if (cursor.moveToFirst() && cursor!= null) {
-                rowId = cursor.getColumnIndex(DatabaseConfig.ENGLISH);
-                do {
-                    translatedWord = cursor.getString(rowId);
-                } while (cursor.moveToNext());
-            }
+        if (cursor.moveToFirst() && cursor!= null) {
+            rowId = cursor.getColumnIndex(toLanguage);
+            do {
+                translatedWord = cursor.getString(rowId);
+            } while (cursor.moveToNext());
         }
 
         return translatedWord;
